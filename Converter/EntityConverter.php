@@ -57,6 +57,10 @@ class EntityConverter extends BaseDoctrineParamConverter
         CrudTransformer $crudTransformer,
         ManagerRegistry $registry = null
     ) {
+        parent::__construct(
+            $registry
+        );
+
         $this->crudTransformer = $crudTransformer;
         $this->registry = $registry;
 

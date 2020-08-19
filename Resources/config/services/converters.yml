@@ -6,6 +6,9 @@ parameters:
     ecentria.api.converter.entity.class:           Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter
 
 services:
+    _defaults:
+        public: true
+
     ecentria.api.converter.model:
         class: '%ecentria.api.converter.model.class%'
         arguments:

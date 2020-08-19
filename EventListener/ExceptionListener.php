@@ -20,6 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Exception listener
@@ -101,7 +102,7 @@ class ExceptionListener
         $responseEvent = new ViewEvent(
             $event->getKernel(),
             $request,
-            $request->getMethod(),
+            $event->isMasterRequest() ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
             $view
         );
 

@@ -8,6 +8,8 @@ parameters:
     ecentria.api.validator.class:                     Symfony\Component\Validator\Validator\RecursiveValidator
 
 services:
+    _defaults:
+        public: true
 
     # Constraints
     ecentria.api.constraint.circular_reference:

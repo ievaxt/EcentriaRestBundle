@@ -4,6 +4,8 @@ parameters:
     ecentria.api.transaction.storage.monolog.class: Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Monolog
 
 services:
+    _defaults:
+        public: true
 
     # Ecentria
     ecentria.api.transaction.storage.doctrine:

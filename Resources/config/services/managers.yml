@@ -21,6 +21,8 @@ parameters:
     ecentria.api.request_creator.class:            Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator
 
 services:
+    _defaults:
+        public: true
 
     # Builders
     ecentria.api.builder.error:

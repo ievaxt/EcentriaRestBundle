@@ -4,6 +4,8 @@ parameters:
     ecentria.utils.embedded_manager.class: Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager
 
 services:
+    _defaults:
+        public: true
 
     ecentria.utils.embedded_manager:
         class: '%ecentria.utils.embedded_manager.class%'
