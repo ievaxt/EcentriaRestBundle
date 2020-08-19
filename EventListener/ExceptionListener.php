@@ -18,8 +18,8 @@ use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 /**
  * Exception listener
@@ -46,18 +46,18 @@ class ExceptionListener
      * Response for method not allowed exception should also contain transaction.
      * So it is the best place to control response object
      *
-     * @param GetResponseForExceptionEvent $event           event
-     * @param string                       $name            name
-     * @param EventDispatcherInterface     $eventDispatcher eventDispatcher
+     * @param ExceptionEvent           $event           event
+     * @param string                   $name            name
+     * @param EventDispatcherInterface $eventDispatcher eventDispatcher
      *
      * @return void
      */
     public function onKernelException(
-        GetResponseForExceptionEvent $event,
+        ExceptionEvent $event,
         $name,
         EventDispatcherInterface $eventDispatcher
     ) {
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         if ($exception instanceof ValidationFailedException) {
             $response = $this->getValidationFailedExceptionResponse($event, $eventDispatcher, $exception);
             if ($response instanceof Response) {
@@ -70,14 +70,14 @@ class ExceptionListener
     /**
      * Get correct response for validation failed exception
      *
-     * @param GetResponseForExceptionEvent $event           event
-     * @param EventDispatcherInterface     $eventDispatcher eventDispatcher
-     * @param ValidationFailedException    $exception       exception
+     * @param ExceptionEvent            $event           event
+     * @param EventDispatcherInterface  $eventDispatcher eventDispatcher
+     * @param ValidationFailedException $exception       exception
      *
      * @return Response|null
      */
     private function getValidationFailedExceptionResponse(
-        GetResponseForExceptionEvent $event,
+        ExceptionEvent $event,
         EventDispatcherInterface $eventDispatcher,
         ValidationFailedException $exception
     ) {
@@ -98,7 +98,7 @@ class ExceptionListener
         $request->attributes->set('violations', $violations);
 
         $view = View::create($data);
-        $responseEvent = new GetResponseForControllerResultEvent(
+        $responseEvent = new ViewEvent(
             $event->getKernel(),
             $request,
             $request->getMethod(),
@@ -117,7 +117,7 @@ class ExceptionListener
             );
         }
 
-        $eventDispatcher->dispatch('kernel.view', $responseEvent);
+        $eventDispatcher->dispatch($responseEvent, 'kernel.view');
 
         return $responseEvent->getResponse();
     }

@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 
 /**
@@ -90,11 +89,11 @@ class NoticeBuilder
     /**
      * Setting transaction notices
      *
-     * @param Transaction &$transaction
+     * @param Transaction $transaction
      *
      * @return void
      */
-    public function setTransactionNotices(Transaction &$transaction)
+    public function setTransactionNotices(Transaction $transaction)
     {
         $messages = $transaction->getMessages();
         if (!$this->isEmpty()) {

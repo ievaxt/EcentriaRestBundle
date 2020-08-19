@@ -13,7 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\ORM\UnitOfWork;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\PersistentCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,

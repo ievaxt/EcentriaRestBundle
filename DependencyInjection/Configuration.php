@@ -24,15 +24,14 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return TreeBuilder
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('ecentria_rest');
+        $treeBuilder = new TreeBuilder('ecentria_rest');
 
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('transaction_storage')
                     ->defaultValue('doctrine')

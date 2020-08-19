@@ -159,11 +159,11 @@ class ErrorBuilder
     /**
      * Setting transaction errors
      *
-     * @param Transaction &$transaction
+     * @param Transaction $transaction
      *
      * @return void
      */
-    public function setTransactionErrors(Transaction &$transaction)
+    public function setTransactionErrors(Transaction $transaction)
     {
         $messages = new ArrayCollection();
         $globalErrors = $this->getErrors(Error::CONTEXT_GLOBAL);

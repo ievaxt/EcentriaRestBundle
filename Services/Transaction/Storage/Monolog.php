@@ -20,7 +20,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
-class Monolog implements TransactionStorageInterface {
+class Monolog implements TransactionStorageInterface
+{
 
     /**
      * Monolog logger

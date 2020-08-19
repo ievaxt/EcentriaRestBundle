@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Event\CrudCollectionEvent;
@@ -191,8 +191,8 @@ class CrudManager
     public function create(CrudEntityInterface $entity, $flush = true)
     {
         $this->eventDispatcher->dispatch(
-            Events::PRE_CREATE,
-            new CrudEvent($entity)
+            new CrudEvent($entity),
+            Events::PRE_CREATE
         );
 
         $this->getEntityManager($entity)->persist($entity);
@@ -202,8 +202,8 @@ class CrudManager
         }
 
         $this->eventDispatcher->dispatch(
-            Events::POST_CREATE,
-            new CrudEvent($entity)
+            new CrudEvent($entity),
+            Events::POST_CREATE
         );
         return $entity;
     }
@@ -259,8 +259,8 @@ class CrudManager
     public function createCollection(ArrayCollection $collection, $processUnitOfWork = false)
     {
         $this->eventDispatcher->dispatch(
-            Events::COLLECTION_PRE_CREATE,
-            new CrudCollectionEvent($collection)
+            new CrudCollectionEvent($collection),
+            Events::COLLECTION_PRE_CREATE
         );
 
         if ($processUnitOfWork) {
@@ -378,8 +378,8 @@ class CrudManager
         $this->save($entity);
 
         $this->eventDispatcher->dispatch(
-            Events::POST_UPDATE,
-            new CrudEvent($entity)
+            new CrudEvent($entity),
+            Events::POST_UPDATE
         );
     }
 
@@ -526,7 +526,7 @@ class CrudManager
             $this->createCollection($unitOfWork->getInsertions(), true);
         }
         if ($unitOfWork->getUpdates()->count()) {
-            $this->updateCollection($unitOfWork->getUpdates(), true);
+            $this->updateCollection($unitOfWork->getUpdates());
         }
     }
 

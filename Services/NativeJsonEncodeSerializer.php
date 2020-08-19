@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;

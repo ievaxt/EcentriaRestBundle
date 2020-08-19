@@ -13,7 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 
 use FOS\RestBundle\Controller\Annotations as FOS,
-    FOS\RestBundle\Controller\FOSRestController,
+    FOS\RestBundle\Controller\AbstractFOSRestController,
     FOS\RestBundle\View\View;
 
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
@@ -23,7 +23,7 @@ use Nelmio\ApiDocBundle\Annotation as Nelmio;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class ConfigurationController extends FOSRestController
+class ConfigurationController extends AbstractFOSRestController
 {
     /**
      * Return defined api configuration

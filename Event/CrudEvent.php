@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Event;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Create collection event

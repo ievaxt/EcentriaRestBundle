@@ -12,14 +12,10 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 use FOS\RestBundle\Controller\Annotations as FOS,
-    FOS\RestBundle\Controller\FOSRestController,
+    FOS\RestBundle\Controller\AbstractFOSRestController,
     FOS\RestBundle\Routing\ClassResourceInterface,
     FOS\RestBundle\View\View;
-
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio,
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -27,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class TransactionController extends FOSRestController implements ClassResourceInterface
+class TransactionController extends AbstractFOSRestController implements ClassResourceInterface
 {
     /**
      * Get transaction

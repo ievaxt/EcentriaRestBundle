@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Event;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Create collection event

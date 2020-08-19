@@ -19,8 +19,8 @@ use JMS\Serializer\Serializer;
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
-class ElasticSearch implements TransactionStorageInterface {
-
+class ElasticSearch implements TransactionStorageInterface
+{
     /**
      * JMS serializer
      *
@@ -36,9 +36,9 @@ class ElasticSearch implements TransactionStorageInterface {
     private $persistentTransactions;
 
     /**
-     * Constructor.
+     * ElasticSearch constructor
      *
-     * @param Logger $logger
+     * @param Serializer $serializer
      */
     public function __construct(Serializer $serializer) {
         $this->serializer = $serializer;
@@ -70,5 +70,4 @@ class ElasticSearch implements TransactionStorageInterface {
     {
 
     }
-
 }

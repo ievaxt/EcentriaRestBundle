@@ -11,11 +11,9 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Ecentria\Libraries\EcentriaRestBundle\Event\Events;
-use Symfony\Component\EventDispatcher\Event;
 use Ecentria\Libraries\EcentriaRestBundle\Event\StatusCheckEvent;
 
 /**
@@ -23,7 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Event\StatusCheckEvent;
  *
  * @author Ruslan Zavacky <ruslan.zavacky@intexsys.lv>
  */
-class StatusController extends FOSRestController
+class StatusController extends AbstractFOSRestController
 {
     /**
      * Get the status of the application

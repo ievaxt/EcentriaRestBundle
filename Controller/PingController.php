@@ -11,8 +11,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
@@ -20,7 +19,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
  *
  * @author Ruslan Zavacky <ruslan.zavacky@intexsys.lv>
  */
-class PingController extends FOSRestController
+class PingController extends AbstractFOSRestController
 {
     /**
      * Get the status of the application

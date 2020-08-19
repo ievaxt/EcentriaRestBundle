@@ -56,7 +56,6 @@ services:
             - '@doctrine'
             - '@annotations.reader'
             - '@jms_serializer'
-            - '@ecentria.api.validator'
 
     # Transaction
     ecentria.api.transaction.handler.get:

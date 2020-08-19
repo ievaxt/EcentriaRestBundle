@@ -471,7 +471,7 @@ class Transaction
      *
      * @param array $parameters
      *
-     * @return TransactionBuilder
+     * @return $this
      */
     public function setQueryParams($parameters)
     {

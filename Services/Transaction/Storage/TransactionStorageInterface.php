@@ -17,8 +17,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
-interface TransactionStorageInterface {
-
+interface TransactionStorageInterface
+{
     /**
      * Read Transaction Model from Transaction Storage
      *

@@ -25,6 +25,13 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionDeleteHandler implements TransactionHandlerInterface
 {
     /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+    
+    /**
      * Constructor
      *
      * @param ErrorBuilder $errorBuilder Error builder

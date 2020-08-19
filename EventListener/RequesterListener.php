@@ -10,9 +10,8 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
-use \Symfony\Component\HttpFoundation\Request;
-use \Gedmo\Blameable\BlameableListener;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Gedmo\Blameable\BlameableListener;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Requester;
 
 /**
@@ -42,11 +41,11 @@ class RequesterListener
     /**
      * On kernel request action
      *
-     * @param GetResponseEvent $event Event object
+     * @param RequestEvent $event Event object
      *
      * @return void
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         $request = $event->getRequest();
         $requester = new Requester($request);

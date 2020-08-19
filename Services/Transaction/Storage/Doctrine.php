@@ -13,17 +13,16 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction as TransactionEntity,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 
-use Doctrine\Common\Persistence\ManagerRegistry,
+use Doctrine\Persistence\ManagerRegistry,
     Doctrine\Common\Collections\ArrayCollection;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * Doctrine Transaction Storage
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
-class Doctrine implements TransactionStorageInterface {
+class Doctrine implements TransactionStorageInterface
+{
 
     const ENTITY_CLASS_NAME = 'Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction';
 

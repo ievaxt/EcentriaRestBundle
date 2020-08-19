@@ -12,7 +12,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 /**
  * Embedded response listener
@@ -41,11 +41,11 @@ class EmbeddedResponseListener
     /**
      * Setting embedded serialization groups for current response
      *
-     * @param GetResponseForControllerResultEvent $event
+     * @param ViewEvent $event
      *
      * @return void
      */
-    public function onKernelView(GetResponseForControllerResultEvent $event)
+    public function onKernelView(ViewEvent $event)
     {
         $view = $event->getControllerResult();
         if (!$view instanceof View) {

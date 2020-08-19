@@ -8,8 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Converter;
 
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
@@ -33,7 +36,7 @@ class EntityConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * Doctrine Registry
      *
-     * @var \PHPUnit_Framework_MockObject_MockObject|Registry
+     * @var \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
      */
     private $managerRegistry;
 
@@ -52,12 +55,16 @@ class EntityConverterTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->managerRegistry = $this->prepareManagerRegistry();
-        $this->crudTransformer = $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
-            ->disableOriginalConstructor()
-            ->setMethods(array('arrayToObject', 'arrayToObjectPropertyValidation'))
-            ->getMock();
-        $this->entityConverter = $this->prepareEntityConverter();
+        $this->managerRegistry = $this->createMock(ManagerRegistry::class);
+        $this->crudTransformer = $this->createMock(CrudTransformer::class);
+            //->disableOriginalConstructor()
+            //->setMethods(array('arrayToObject', 'arrayToObjectPropertyValidation'))
+            //->getMock();
+
+        $this->entityConverter = new EntityConverter(
+            $this->crudTransformer,
+            $this->managerRegistry
+        );
     }
 
     /**
@@ -72,48 +79,42 @@ class EntityConverterTest extends \PHPUnit_Framework_TestCase
         $object->setIds($objectContent);
 
         $referenceObject = new CircularReferenceEntity();
-        $this->entityConverter->expects($this->any())
+
+        $mockRepository = $this->createMock(ObjectRepository::class);
+        $mockRepository
             ->method('find')
             ->willReturn($referenceObject);
 
+        $mockManager = $this->createMock(ObjectManager::class);
+        $mockManager
+            ->method('getRepository')
+            ->willReturn($mockRepository);
+
+        $this->managerRegistry
+            ->method('getManager')
+            ->willReturn($mockManager);
+        
+        $this->crudTransformer
+            ->method('getPropertySetter')
+            ->willReturn('setCircularReferenceEntity');
+
         $this->entityConverter->convertExternalReferences(
-            new Request(array(), array(), array(), array(), array(), array(), json_encode($objectContent)),
+            new Request([], [], ['some-id' => '123'], [], [], [], json_encode($objectContent)),
             $object,
-            array(
-                'references' => array(
+            [
+                'references'     => [
                     'class' => 'CircularReferenceEntity',
                     'name'  => 'CircularReferenceEntity'
-                )
-            )
+                ],
+                'mapping'        => [],
+                'exclude'        => [],
+                'id'             => 'some-id',
+                'entity_manager' => 'some-manager',
+                'evict_cache'    => false,
+            ]
         );
 
         //test validation and references conversion
         $this->assertEquals($referenceObject, $object->getCircularReferenceEntity());
-
-    }
-
-    /**
-     * Prepare Entity Converter
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|EntityConverter
-     */
-    private function prepareEntityConverter()
-    {
-        return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter')
-            ->setMethods(array('find'))
-            ->setConstructorArgs(array($this->crudTransformer, $this->managerRegistry))
-            ->getMock();
-    }
-
-    /**
-     * Prepare Manager Registry
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Registry
-     */
-    private function prepareManagerRegistry()
-    {
-        return $this->getMockBuilder('\Symfony\Bridge\Doctrine\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

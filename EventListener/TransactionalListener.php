@@ -14,7 +14,6 @@ use Doctrine\Common\Annotations\Reader,
     Doctrine\Common\Util\ClassUtils;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\RelatedRouteForAction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
@@ -27,10 +26,9 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
 
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
-    Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
-    Symfony\Component\HttpKernel\Event\FilterResponseEvent,
-    Symfony\Component\HttpKernel\Event\PostResponseEvent,
+use Symfony\Component\HttpKernel\Event\ControllerEvent,
+    Symfony\Component\HttpKernel\Event\ViewEvent,
+    Symfony\Component\HttpKernel\Event\TerminateEvent,
     Symfony\Component\HttpKernel\KernelEvents,
     Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -112,11 +110,11 @@ class TransactionalListener implements EventSubscriberInterface
      * controllers annotations like the template to render or HTTP caching
      * configuration.
      *
-     * @param FilterControllerEvent $event A FilterControllerEvent instance
+     * @param ControllerEvent $event A FilterControllerEvent instance
      *
      * @return void
      */
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(ControllerEvent $event)
     {
         if (!is_array($controller = $event->getController())) {
             return;
@@ -174,11 +172,11 @@ class TransactionalListener implements EventSubscriberInterface
     /**
      * Let's process transaction
      *
-     * @param GetResponseForControllerResultEvent $event event
+     * @param ViewEvent $event event
      *
      * @return void
      */
-    public function onKernelView(GetResponseForControllerResultEvent $event)
+    public function onKernelView(ViewEvent $event)
     {
         $request = $event->getRequest();
         $view = $event->getControllerResult();
@@ -210,11 +208,11 @@ class TransactionalListener implements EventSubscriberInterface
     /**
      * On kernel terminate
      *
-     * @param PostResponseEvent $postResponseEvent postResponseEvent
+     * @param TerminateEvent $postResponseEvent postResponseEvent
      *
      * @return void
      */
-    public function onKernelTerminate(PostResponseEvent $postResponseEvent)
+    public function onKernelTerminate(TerminateEvent $postResponseEvent)
     {
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');

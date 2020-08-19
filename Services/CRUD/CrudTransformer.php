@@ -12,8 +12,9 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Inflector\Inflector;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
@@ -23,8 +24,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Exception\RuntimeException;
 
@@ -75,23 +74,28 @@ class CrudTransformer
     private $classMetadata;
 
     /**
+     * Inflector
+     *
+     * @var Inflector
+     */
+    private $inflector;
+
+    /**
      * Constructor
      *
-     * @param ManagerRegistry    $registry          Manager Registry
-     * @param AnnotationReader   $annotationsReader annotationsReader
-     * @param Serializer         $serializer        serializer
-     * @param RecursiveValidator $validator         validator
+     * @param ManagerRegistry  $registry          Manager Registry
+     * @param AnnotationReader $annotationsReader annotationsReader
+     * @param Serializer       $serializer        serializer
      */
     public function __construct(
         ManagerRegistry $registry,
         AnnotationReader $annotationsReader,
-        Serializer $serializer,
-        RecursiveValidator $validator
+        Serializer $serializer
     ) {
         $this->registry = $registry;
         $this->annotationsReader = $annotationsReader;
         $this->serializer = $serializer;
-        $this->validator = $validator;
+        $this->inflector = InflectorFactory::create()->build();
     }
 
     /**
@@ -247,7 +251,7 @@ class CrudTransformer
      */
     public function isPropertyAccessible($property, $action)
     {
-        $property = Inflector::camelize($property);
+        $property = $this->inflector->camelize($property);
         if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
             $property = ucfirst($property);
         }
@@ -410,7 +414,7 @@ class CrudTransformer
      */
     public function getPropertySetter($property)
     {
-        return Inflector::camelize('set_' . $property);
+        return $this->inflector->camelize('set_' . $property);
     }
 
     /**
@@ -422,7 +426,7 @@ class CrudTransformer
      */
     public function getPropertyGetter($property)
     {
-        return Inflector::camelize('get_' . $property);
+        return $this->inflector->camelize('get_' . $property);
     }
 
     /**
@@ -442,7 +446,7 @@ class CrudTransformer
             return;
         }
 
-        $property = Inflector::camelize($property);
+        $property = $this->inflector->camelize($property);
         if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
             $property = ucfirst($property);
         }

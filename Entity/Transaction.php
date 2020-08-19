@@ -544,7 +544,7 @@ class Transaction extends TransactionModel
      *
      * @param array $parameters
      *
-     * @return TransactionBuilder
+     * @return $this
      */
     public function setQueryParams($parameters)
     {

@@ -10,8 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Create staus check event
@@ -21,14 +20,13 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAsser
  */
 class StatusCheckEvent extends Event
 {
+    const STATE_OK      = 'Ok';
+    const STATE_WARNING = 'Warning';
+    const STATE_FAILURE = 'Failure';
 
-    CONST STATE_OK      = 'Ok';
-    CONST STATE_WARNING = 'Warning';
-    CONST STATE_FAILURE = 'Failure';
-
-    CONST STATE_OK_CODE      = 0;
-    CONST STATE_WARNING_CODE = 1;
-    CONST STATE_FAILURE_CODE = 2;
+    const STATE_OK_CODE      = 0;
+    const STATE_WARNING_CODE = 1;
+    const STATE_FAILURE_CODE = 2;
 
     /**
      * List of available states

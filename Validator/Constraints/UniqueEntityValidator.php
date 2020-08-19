@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator as BaseUniqueEntityValidator;
 use Symfony\Component\Validator\Constraint;
