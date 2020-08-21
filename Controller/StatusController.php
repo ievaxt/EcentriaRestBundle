@@ -15,6 +15,7 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Ecentria\Libraries\EcentriaRestBundle\Event\Events;
 use Ecentria\Libraries\EcentriaRestBundle\Event\StatusCheckEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Status Controller for monitoring purposes
@@ -23,6 +24,23 @@ use Ecentria\Libraries\EcentriaRestBundle\Event\StatusCheckEvent;
  */
 class StatusController extends AbstractFOSRestController
 {
+    /**
+     * Event dispatcher
+     *
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * StatusController constructor
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * Get the status of the application
      *
@@ -38,9 +56,8 @@ class StatusController extends AbstractFOSRestController
      */
     public function getStatusAction()
     {
-        $dispatcher = $this->get('event_dispatcher');
         $event = new StatusCheckEvent();
-        $dispatcher->dispatch(Events::STATUS_CHECK, $event);
+        $this->eventDispatcher->dispatch(Events::STATUS_CHECK, $event);
 
         if ($event->getState() == StatusCheckEvent::STATE_OK) {
             return $this->view(

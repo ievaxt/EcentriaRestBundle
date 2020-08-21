@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -11,11 +12,10 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
 use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
-
+use Ecentria\Libraries\EcentriaRestBundle\Services\ConfigurationManager;
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\AbstractFOSRestController,
     FOS\RestBundle\View\View;
-
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 
 /**
@@ -25,6 +25,23 @@ use Nelmio\ApiDocBundle\Annotation as Nelmio;
  */
 class ConfigurationController extends AbstractFOSRestController
 {
+    /**
+     * Configuration manager
+     *
+     * @var ConfigurationManager
+     */
+    private $configurationManager;
+
+    /**
+     * ConfigurationController constructor
+     *
+     * @param ConfigurationManager $configurationManager
+     */
+    public function __construct(ConfigurationManager $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
     /**
      * Return defined api configuration
      *
@@ -47,8 +64,7 @@ class ConfigurationController extends AbstractFOSRestController
      */
     public function getConfigurationAction()
     {
-        $configurationManager = $this->get('ecentria.api.configuration.manager');
-        $configuration = $configurationManager->getConfiguration();
+        $configuration = $this->configurationManager->getConfiguration();
         return $this->view($configuration);
     }
 }

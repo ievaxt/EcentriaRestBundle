@@ -5,3 +5,4 @@ imports:
     - { resource: services/listeners.yml }
     - { resource: services/utils.yml }
     - { resource: services/storages.yml }
+    - { resource: services/controllers.yml }

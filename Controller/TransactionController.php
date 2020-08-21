@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -26,6 +27,23 @@ use Symfony\Component\HttpFoundation\Request;
 class TransactionController extends AbstractFOSRestController implements ClassResourceInterface
 {
     /**
+     * Storage
+     *
+     * @var TransactionStorageInterface
+     */
+    private $storage;
+
+    /**
+     * TransactionController constructor.
+     *
+     * @param TransactionStorageInterface $storage
+     */
+    public function __construct(TransactionStorageInterface $storage)
+    {
+        $this->storage = $storage;
+    }
+
+    /**
      * Get transaction
      *
      * @param Request $request Request instance
@@ -52,10 +70,7 @@ class TransactionController extends AbstractFOSRestController implements ClassRe
      */
     public function getAction(Request $request, $id)
     {
-        /** @var TransactionStorageInterface $doctrineStorage */
-        $storageParam = $this->getParameter('ecentria_rest.transaction_storage');
-        $storage = $this->get($storageParam);
-        $transaction = $storage->read($id);
+        $transaction = $this->storage->read($id);
 
         return $this->view($transaction);
     }

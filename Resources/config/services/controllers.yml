@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        public: true
+
+    Ecentria\Libraries\EcentriaRestBundle\Controller\ConfigurationController:
+        arguments:
+            - '@ecentria.api.configuration.manager'
+
+    Ecentria\Libraries\EcentriaRestBundle\Controller\StatusController:
+        arguments:
+            - '@event_dispatcher'
+
+    Ecentria\Libraries\EcentriaRestBundle\Controller\TransactionController:
+        arguments:
+            - '@=service(parameter("ecentria_rest.transaction_storage"))'
