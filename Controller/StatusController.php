@@ -57,7 +57,7 @@ class StatusController extends AbstractFOSRestController
     public function getStatusAction()
     {
         $event = new StatusCheckEvent();
-        $this->eventDispatcher->dispatch(Events::STATUS_CHECK, $event);
+        $this->eventDispatcher->dispatch($event, Events::STATUS_CHECK);
 
         if ($event->getState() == StatusCheckEvent::STATE_OK) {
             return $this->view(
