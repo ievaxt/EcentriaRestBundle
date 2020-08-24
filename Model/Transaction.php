@@ -52,7 +52,7 @@ class Transaction
     /**
      * Related entity
      *
-     * @var string
+     * @var array|null
      */
     private $relatedIds;
 
@@ -193,12 +193,17 @@ class Transaction
     /**
      * RelatedIds setter
      *
-     * @param array $relatedIds
+     * @param array|null $relatedIds
      *
      * @return $this
      */
     public function setRelatedIds($relatedIds)
     {
+        if (is_array($relatedIds) && array_key_exists('id', $relatedIds) && $relatedIds['id'] === null) {
+            $this->relatedIds = null;
+            return $this;
+        }
+
         $this->relatedIds = $relatedIds;
         return $this;
     }
@@ -206,7 +211,7 @@ class Transaction
     /**
      * RelatedId getter
      *
-     * @return array
+     * @return array|null
      */
     public function getRelatedIds()
     {
