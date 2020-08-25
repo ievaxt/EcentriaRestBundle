@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -8,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services\Transaction;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -37,6 +38,11 @@ class TransactionUpdaterTest extends \PHPUnit_Framework_TestCase
         $this->transactionUpdater = new TransactionUpdater();
     }
 
+    /**
+     * Test update response time
+     *
+     * @return void
+     */
     public function testUpdateResponseTime()
     {
         $currentTimestamp = microtime(true);
@@ -45,7 +51,7 @@ class TransactionUpdaterTest extends \PHPUnit_Framework_TestCase
         $transaction = new Transaction();
         $this->assertEquals(0, $transaction->getResponseTime());
 
-        $request = new Request;
+        $request = new Request();
         $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => $startTimestamp));
 
         $transaction = $this->transactionUpdater->updateResponseTime($transaction, $request, $currentTimestamp);

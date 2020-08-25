@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -8,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services\Embedded;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use Symfony\Component\HttpFoundation\Request;
