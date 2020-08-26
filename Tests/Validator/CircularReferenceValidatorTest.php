@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -11,11 +12,11 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Validator;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReference;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReferenceValidator;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
-use Symfony\Component\Validator\Context\ExecutionContext;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Circular Reference Validator Test
@@ -27,7 +28,7 @@ class CircularReferenceValidatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Context Mock
      *
-     * @var \PHPUnit_Framework_MockObject_MockObject|ExecutionContext
+     * @var \PHPUnit_Framework_MockObject_MockObject|ExecutionContextInterface
      */
     protected $context;
 
@@ -56,7 +57,7 @@ class CircularReferenceValidatorTest extends \PHPUnit_Framework_TestCase
         $registry->expects($this->any())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->entityManager));
-        $this->context = $this->createMock(ExecutionContext::class);
+        $this->context = $this->createMock(ExecutionContextInterface::class);
         $this->validator = new CircularReferenceValidator();
         $this->validator->setRegistry($registry);
         $this->validator->initialize($this->context);

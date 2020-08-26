@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -10,12 +11,14 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -57,13 +60,6 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     private $serializer;
 
     /**
-     * RecursiveValidator
-     *
-     * @var \PHPUnit_Framework_MockObject_MockObject|RecursiveValidator
-     */
-    private $validator;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -72,18 +68,16 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
-        $registry = $this->createMock('\Symfony\Bridge\Doctrine\ManagerRegistry');
+        $registry = $this->createMock(ManagerRegistry::class);
         $registry->expects($this->any())
             ->method('getManagerForClass')
-            ->will($this->returnValue($this->entityManager));
+            ->willReturn($this->entityManager);
         $this->annotationsReader = $this->prepareAnnotationReader();
         $this->serializer = $this->prepareSerializer();
-        $this->validator = $this->prepareValidator();
         $this->crudTransformer = new CrudTransformer(
             $registry,
             $this->annotationsReader,
-            $this->serializer,
-            $this->validator
+            $this->serializer
         );
     }
 
@@ -130,8 +124,8 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertArrayToEntityAndValidate()
     {
-        /** @var CrudTransformer $mockTransformer */
-        $mockTransformer = $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
+        /** @var \PHPUnit_Framework_MockObject_MockObject|CrudTransformer $mockTransformer */
+        $mockTransformer = $this->getMockBuilder(CrudTransformer::class)
              ->disableOriginalConstructor()
              ->setMethods(array('arrayToObject', 'arrayToObjectPropertyValidation'))
              ->getMock();
@@ -163,7 +157,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
         /** @var $returnedObject EntityConverterEntity */
         $returnedObject = $mockTransformer->convertArrayToEntityAndValidate(
             $objectContent,
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            EntityConverterEntity::class,
             CrudTransformer::MODE_RETRIEVE
         );
         $this->assertEquals($object, $returnedObject);
@@ -171,7 +165,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $returnedObject = $mockTransformer->convertArrayToEntityAndValidate(
             $objectContent,
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            EntityConverterEntity::class,
             CrudTransformer::MODE_CREATE
         );
         $this->assertEquals($badProperties, $returnedObject->getViolations());
@@ -184,7 +178,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $returnedObject = $this->crudTransformer->convertArrayToEntityAndValidate(
             $objectContent,
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            EntityConverterEntity::class,
             CrudTransformer::MODE_UPDATE,
             $objectUpdate
         );
@@ -432,7 +426,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareClassMetadata()
     {
-        return $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadata')
+        return $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 array(
@@ -449,11 +443,11 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing EntityManager
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|EntityManager
      */
     private function prepareEntityManager()
     {
-        return $this->getMockBuilder('\Doctrine\ORM\EntityManager')
+        return $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->setMethods(array('persist', 'flush', 'getClassMetadata', 'getReference'))
             ->getMock();
@@ -462,11 +456,11 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing AnnotationReader
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|AnnotationReader
      */
     private function prepareAnnotationReader()
     {
-        return $this->getMockBuilder('\Doctrine\Common\Annotations\AnnotationReader')
+        return $this->getMockBuilder(AnnotationReader::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getPropertyAnnotation'))
             ->getMock();
@@ -475,11 +469,11 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing ReflectionProperty
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|\ReflectionProperty
      */
     private function prepareReflectionProperty()
     {
-        return $this->getMockBuilder('\ReflectionProperty')
+        return $this->getMockBuilder(\ReflectionProperty::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -487,11 +481,11 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing stdClass
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|\stdClass
      */
     private function prepareClass()
     {
-        return $this->getMockBuilder('\stdClass')
+        return $this->getMockBuilder(\stdClass::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getId'))
             ->getMock();
@@ -500,23 +494,11 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing serializer
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|Serializer
      */
     private function prepareSerializer()
     {
-        return $this->getMockBuilder('\JMS\Serializer\Serializer')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
-     * PrepareValidator
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|RecursiveValidator
-     */
-    private function prepareValidator()
-    {
-        return $this->getMockBuilder('\Symfony\Component\Validator\Validator\RecursiveValidator')
+        return $this->getMockBuilder(Serializer::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

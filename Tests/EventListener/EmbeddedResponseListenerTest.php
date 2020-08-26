@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -13,14 +14,15 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\EmbeddedResponseListener;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 /**
  * Embedded response listener test
  *
- * @property \PHPUnit_Framework_MockObject_MockObject|EmbeddedManager                     manager
- * @property \PHPUnit_Framework_MockObject_MockObject|GetResponseForControllerResultEvent event
- * @property EmbeddedResponseListener                                                     listener
+ * @property \PHPUnit_Framework_MockObject_MockObject|EmbeddedManager manager
+ * @property \PHPUnit_Framework_MockObject_MockObject|ViewEvent       event
+ * @property EmbeddedResponseListener                                 listener
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
@@ -31,8 +33,8 @@ class EmbeddedResponseListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->manager = $this->createMock('Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager');
-        $this->event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
+        $this->manager = $this->createMock(EmbeddedManager::class);
+        $this->event = $this->getMockBuilder(ViewEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->listener = new EmbeddedResponseListener($this->manager);
@@ -61,7 +63,7 @@ class EmbeddedResponseListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializationGroupsArePassedToContext()
     {
-        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
+        $request = $this->createMock(Request::class);
         $view = new View();
         $groups = ['group1', 'group2'];
         $this->event->expects($this->once())

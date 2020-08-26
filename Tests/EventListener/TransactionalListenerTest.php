@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -15,6 +16,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\TransactionalListener;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 /**
  * Transactional listener test
@@ -26,35 +29,35 @@ class TransactionalListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * Reader
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $reader;
 
     /**
      * Transaction builder
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $transactionBuilder;
 
     /**
      * Transaction storage
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $transactionStorage;
 
     /**
      * Transaction response manager
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $transactionResponseManager;
 
     /**
      * Transaction updater
      *
-     * @var TransactionaUpdater
+     * @var TransactionUpdater
      */
     protected $transactionUpdater;
 
@@ -107,11 +110,12 @@ class TransactionalListenerTest extends \PHPUnit_Framework_TestCase
      * Prepare GetResponseForControllerResultEvent
      *
      * @param Transaction $transaction
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function prepareGetResponseForControllerResultEvent(Transaction $transaction)
     {
-        $request = $this->getMockBuilder('\Symfony\Component\HttpFoundation\Request')
+        $request = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();
         $request->expects($this->at(0))
@@ -125,7 +129,7 @@ class TransactionalListenerTest extends \PHPUnit_Framework_TestCase
         $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => microtime(true) - 0.5));
         $request->attributes = new ParameterBag();
 
-        $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
+        $event = $this->getMockBuilder(ViewEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
         $event->expects($this->once())

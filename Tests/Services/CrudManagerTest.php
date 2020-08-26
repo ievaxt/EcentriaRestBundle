@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the ecentria group, inc. software.
  *
@@ -11,12 +12,17 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
+use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
  * CRUD manager test
@@ -69,13 +75,13 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
-        $registry = $this->createMock('\Symfony\Bridge\Doctrine\ManagerRegistry');
+        $registry = $this->createMock(ManagerRegistry::class);
         $registry->expects($this->any())
             ->method('getManagerForClass')
-            ->will($this->returnValue($this->entityManager));
+            ->willReturn($this->entityManager);
 
         $this->recursiveValidator = $this->prepareRecursiveValidator();
-        $this->dispatcher = $this->createMock('\Symfony\Component\EventDispatcher\EventDispatcher');
+        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->crudTransformer = $this->prepareCRUDTransformer();
         $this->crudManager = new CrudManager(
             $registry,
@@ -129,7 +135,6 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
         } catch (ValidationFailedException $e) {
             $this->assertEquals('Test', $e->getConstraintViolationList()->get(0)->getMessage());
         }
-
     }
 
     /**
@@ -268,11 +273,11 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing EntityManager
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|EntityManager
      */
     private function prepareEntityManager()
     {
-        return $this->getMockBuilder('\Doctrine\ORM\EntityManager')
+        return $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->setMethods(array('persist', 'flush', 'getClassMetadata', 'getUnitOfWork'))
             ->getMock();
@@ -281,11 +286,11 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing EntityManager
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|UnitOfWork
      */
     private function prepareUnitOfWork()
     {
-        return $this->getMockBuilder('\Doctrine\ORM\UnitOfWork')
+        return $this->getMockBuilder(UnitOfWork::class  )
             ->disableOriginalConstructor()
             ->setMethods(array('getEntityState'))
             ->getMock();
@@ -294,11 +299,11 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing EntityRepository
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|CrudTransformer
      */
     private function prepareCRUDTransformer()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
+        return $this->getMockBuilder(CrudTransformer::class)
             ->disableOriginalConstructor()
             ->setMethods(array('initializeClassMetadata', 'processPropertyValue'))
             ->getMock();
@@ -307,11 +312,11 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing EntityRepository
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|RecursiveValidator
      */
     private function prepareRecursiveValidator()
     {
-        return $this->getMockBuilder('\Symfony\Component\Validator\Validator\RecursiveValidator')
+        return $this->getMockBuilder(RecursiveValidator::Class)
             ->disableOriginalConstructor()
             ->setMethods(array('validate'))
             ->getMock();
@@ -324,7 +329,7 @@ class CrudManagerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareEntity()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity')
+        return $this->getMockBuilder(CircularReferenceEntity::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getId', 'getType', 'setType'))
             ->getMock();
